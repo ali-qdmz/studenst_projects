@@ -1,0 +1,157 @@
+import pyautogui as pg
+import time
+import pytesseract
+from PIL import Image
+from pytesseract import image_to_string
+import pyscreenshot as scs
+import numpy as np
+import PIL
+pytesseract.pytesseract.tesseract_cmd = 'C:/Users/gadimzadeh/AppData/Local/Tesseract-OCR/tesseract.exe'
+
+
+def start_up_Prediction():
+    pg.moveTo(1250,430)
+    pg.click()
+
+def start_down_Prediction():
+    pg.moveTo(1250,540)
+    pg.click()
+
+def change_BetValue(value):
+    pg.moveTo(1195,330)
+    pg.click()
+    pg.doubleClick()
+    pg.press('backspace')
+    price = str(value)
+    for item in price:
+        if item == '.':
+            pg.press('.')        
+        if item == '0':
+            pg.press('num0')
+        if item == '1':
+            pg.press('num1')
+        if item == '2':
+            pg.press('num2')
+        if item == '3':
+            pg.press('num3')
+        if item == '4':
+            pg.press('num4')
+        if item == '5':
+            pg.press('num5')
+        if item == '6':
+            pg.press('num6')
+        if item == '7':
+            pg.press('num7')
+        if item == '8':
+            pg.press('num8')
+        if item == '9':
+            pg.press('num9')
+        
+def change_BetTime(minute,hour = None):
+    pg.moveTo(1254,232)
+    pg.doubleClick()
+    pg.press('backspace')
+    pg.press('backspace')
+    time = str(minute)
+    for item in time:
+        if item == '0':
+            pg.press('num0')
+        if item == '1':
+            pg.press('num1')
+        if item == '2':
+            pg.press('num2')
+        if item == '3':
+            pg.press('num3')
+        if item == '4':
+            pg.press('num4')
+        if item == '5':
+            pg.press('num5')
+        if item == '6':
+            pg.press('num6')
+        if item == '7':
+            pg.press('num7')
+        if item == '8':
+            pg.press('num8')
+        if item == '9':
+            pg.press('num9')
+    if hour != None:
+        pg.moveTo(1197,232)
+        pg.doubleClick()
+        pg.press('backspace')
+        pg.press('backspace')
+        time2 = str(hour)
+        for item in time2:
+            if item == '0':
+                pg.press('num0')
+            if item == '1':
+                pg.press('num1')
+            if item == '2':
+                pg.press('num2')
+            if item == '3':
+                pg.press('num3')
+            if item == '4':
+                pg.press('num4')
+            if item == '5':
+                pg.press('num5')
+            if item == '6':
+                pg.press('num6')
+            if item == '7':
+                pg.press('num7')
+            if item == '8':
+                pg.press('num8')
+            if item == '9':
+                pg.press('num9')
+
+
+def get_Result():
+    time.sleep(2)
+    pg.press('pagedown')
+    time.sleep(1)
+    x = scs.grab()
+    x.save('1.jpg')
+    imageObject  = Image.open("1.jpg")
+    cropped = imageObject.crop((1160,630,1308,670))
+    cropped.save('mycrop.jpg')
+    cropped.show()
+    #cropped.show()
+    img = Image.open('mycrop.jpg')
+    new_size = tuple(2*x for x in cropped.size)
+    img = img.resize(new_size, Image.ANTIALIAS)
+    text = pytesseract.image_to_string(img)
+    pg.press('pageup')
+    print(text)
+    if text == 'Your forecast was' + '\n' + 'correct':
+        return True
+    if text == 'Your forecast was'  + '\n' + 'incorrect':
+        return False
+    else:
+        return 'missed'
+
+
+def start():
+    start_value = 1
+    start_time = 1    
+    print(3)
+    time.sleep(1)
+    print(2)
+    time.sleep(1)
+    print(1)
+    time.sleep(1)
+    while True:
+        change_BetValue(start_value)
+        change_BetTime(start_time)
+        start_up_Prediction()
+        time.sleep(62)
+        R = get_Result()
+        if R == False:
+            start_value = (start_value * 2) + (start_value*1.2)
+        if R == True:
+            start_value = 1
+
+    
+    
+
+    
+
+    
+        
